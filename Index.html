@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nexus Server Hub</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --theme-bg: #0b1329;
+            --theme-card: rgba(28, 37, 65, 0.6);
+            --theme-accent: #38bdf8;
+            --theme-accent-glow: rgba(56, 189, 248, 0.3);
+            --text-main: #f8fafc;
+        }
+
+        body {
+            background-color: var(--tg-theme-bg-color, var(--theme-bg));
+            color: var(--tg-theme-text-color, var(--text-main));
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            user-select: none;
+        }
+
+        .glass-panel {
+            background: var(--tg-theme-secondary-bg-color, var(--theme-card));
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .active-tab-btn {
+            color: var(--theme-accent);
+            text-shadow: 0 0 10px var(--theme-accent-glow);
+        }
+
+        /* Кастомный ползунок */
+        .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--theme-accent);
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--theme-accent-glow);
+        }
+
+        .nav-blur {
+            background: rgba(11, 19, 41, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="pb-24 pt-2 px-4 min-h-screen flex flex-col justify-between">
+
+    <!-- КОНТЕНТНАЯ ЗОНА -->
+    <div id="main-content" class="w-full max-w-md mx-auto flex-1">
+        
+        <!-- ВКЛАДКА 1: ДАШБОРД -->
+        <div id="tab-dashboard" class="tab-content space-y-5">
+            <!-- Профиль -->
+            <div class="glass-panel rounded-3xl p-5 flex items-center justify-between shadow-xl">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center text-2xl font-black shadow-lg shadow-sky-500/20 text-white" id="userAvatar">
+                        N
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h2 id="userGreeting" class="text-xl font-bold tracking-tight">Nexus Admin</h2>
+                            <span class="text-xs bg-sky-500/20 text-sky-400 font-bold px-2 py-0.5 rounded-full border border-sky-500/30">Host</span>
+                        </div>
+                        <p class="text-xs opacity-60 mt-0.5"><i class="fa-solid fa-server mr-1"></i> Tecno Pova 5 Server</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span class="inline-flex items-center gap-1.5 bg-green-500/10 text-green-400 text-xs font-bold px-3 py-1 rounded-full border border-green-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Online
+                    </span>
+                </div>
+            </div>
+
+            <!-- Мониторинг ресурсов -->
+            <h3 class="text-sm font-bold uppercase tracking-wider opacity-50 px-1">Телеметрия смартфона</h3>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <!-- ОЗУ кард -->
+                <div class="glass-panel rounded-3xl p-4 flex flex-col justify-between h-32">
+                    <div class="flex justify-between items-start">
+                        <span class="p-2.5 rounded-xl bg-sky-500/10 text-sky-400 text-sm"><i class="fa-solid fa-microchip"></i></span>
+                        <span class="text-xs font-bold text-sky-400">56%</span>
+                    </div>
+                    <div>
+                        <div class="text-xs opacity-50 font-medium">Оперативная память</div>
+                        <div class="text-base font-bold mt-0.5">4.3 ГБ / 8 ГБ</div>
+                    </div>
+                </div>
+
+                <!-- Батарея кард -->
+                <div class="glass-panel rounded-3xl p-4 flex flex-col justify-between h-32">
+                    <div class="flex justify-between items-start">
+                        <span class="p-2.5 rounded-xl bg-green-500/10 text-green-400 text-sm"><i class="fa-solid fa-battery-charging"></i></span>
+                        <span class="text-xs font-bold text-green-400">79%</span>
+                    </div>
+                    <div>
+                        <div class="text-xs opacity-50 font-medium">Заряд устройства</div>
+                        <div class="text-base font-bold mt-0.5">Заряжается</div>
+                    </div>
+                </div>
+
+                <!-- Память телефона -->
+                <div class="glass-panel rounded-3xl p-4 col-span-2 space-y-2">
+                    <div class="flex justify-between text-xs font-medium">
+                        <span class="opacity-60"><i class="fa-solid fa-mobile-screen mr-1"></i> Внутренний накопитель</span>
+                        <span class="font-bold text-sky-400">Свободно 219 ГБ из 229 ГБ</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-sky-400 to-blue-500 h-full w-[5%]"></div>
+                    </div>
+                </div>
+
+                <!-- Google Диск -->
+                <div class="glass-panel rounded-3xl p-4 col-span-2 space-y-2">
+                    <div class="flex justify-between text-xs font-medium">
+                        <span class="opacity-60"><i class="fa-brands fa-google-drive mr-1"></i> Хранилище Google Диск</span>
+                        <span class="font-bold text-emerald-400">Свободно 5.1 ТБ из 5.2 ТБ</span>
+                    </div>
+                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full w-[2%]"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА 2: ЗАГРУЗЧИК -->
+        <div id="tab-downloader" class="tab-content hidden space-y-5">
+            <div class="glass-panel rounded-3xl p-5 space-y-4">
+                <h3 class="text-lg font-bold tracking-tight"><i class="fa-solid fa-cloud-arrow-down mr-2 text-sky-400"></i>Медиа Загрузчик</h3>
+                
+                <!-- Поле ввода ссылки -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold opacity-50">Ссылка на видео / аудио</label>
+                    <div class="relative">
+                        <input id="url-input" type="text" placeholder="Вставьте ссылку на YouTube, TikTok, Reels..." class="w-full bg-slate-900/50 border border-white/10 rounded-2xl py-3.5 pl-4 pr-12 text-sm focus:outline-none focus:border-sky-500/50 transition">
+                        <button onclick="pasteFromClipboard()" class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-sky-400 opacity-80 hover:opacity-100 transition btn-active">
+                            <i class="fa-solid fa-paste text-base"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Выбор формата -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold opacity-50">Тип контента</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="fmt-video" onclick="setFormat('video')" class="py-3 px-4 rounded-2xl font-bold text-sm border border-sky-500 bg-sky-500/10 text-sky-400 transition btn-active flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-video"></i> Видео (MP4)
+                        </button>
+                        <button id="fmt-audio" onclick="setFormat('audio')" class="py-3 px-4 rounded-2xl font-bold text-sm border border-white/10 bg-slate-900/30 opacity-60 transition btn-active flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-music"></i> Аудио (MP3)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Выбор качества -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between text-xs font-bold">
+                        <span class="opacity-50">Максимальное разрешение</span>
+                        <span id="quality-val" class="text-sky-400">1080p (FullHD)</span>
+                    </div>
+                    <input id="quality-slider" type="range" min="1" max="4" value="3" oninput="updateQualityLabel(this.value)" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer custom-range">
+                </div>
+
+                <!-- Кнопка действия -->
+                <button onclick="startDownload()" class="w-full bg-gradient-to-r from-sky-400 to-blue-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-sky-500/20 btn-active flex items-center justify-center gap-2 mt-2">
+                    <i class="fa-solid fa-play"></i> Запустить сканирование и загрузку
+                </button>
+            </div>
+        </div>
+
+        <!-- ВКЛАДКА 3: АДМИНКА -->
+        <div id="tab-admin" class="tab-content hidden space-y-5">
+            <div class="glass-panel rounded-3xl p-5 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold tracking-tight"><i class="fa-solid fa-users-gear mr-2 text-purple-400"></i>Управление доступом</h3>
+                    <button onclick="showAddUserAlert()" class="p-2 bg-purple-500/10 text-purple-400 border border-purple-500/20 text-xs font-bold rounded-xl btn-active">
+                        <i class="fa-solid fa-plus mr-1"></i> Добавить
+                    </button>
+                </div>
+
+                <!-- Список пользователей -->
+                <div class="space-y-2" id="users-list">
+                    <!-- Юзер 1 -->
+                    <div class="flex items-center justify-between p-3.5 bg-slate-900/30 border border-white/5 rounded-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold">👑</div>
+                            <div>
+                                <h4 class="text-sm font-bold">Главный Админ</h4>
+                                <p class="text-xs opacity-50">ID: 8467150954</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] bg-purple-500/20 text-purple-400 font-bold px-2 py-0.5 rounded-md border border-purple-500/30">Owner</span>
+                    </div>
+                    <!-- Юзер 2 -->
+                    <div class="flex items-center justify-between p-3.5 bg-slate-900/30 border border-white/5 rounded-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center font-bold">U1</div>
+                            <div>
+                                <h4 class="text-sm font-bold">Пользователь #2</h4>
+                                <p class="text-xs opacity-50">ID: 1847688699</p>
+                            </div>
+                        </div>
+                        <button onclick="mockDeleteUser(1847688699)" class="p-2 text-red-400/70 hover:text-red-400 transition btn-active"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                    </div>
+                    <!-- Юзер 3 -->
+                    <div class="flex items-center justify-between p-3.5 bg-slate-900/30 border border-white/5 rounded-2xl">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center font-bold">U2</div>
+                            <div>
+                                <h4 class="text-sm font-bold">Пользователь #3</h4>
+                                <p class="text-xs opacity-50">ID: 8199263831</p>
+                            </div>
+                        </div>
+                        <button onclick="mockDeleteUser(8199263831)" class="p-2 text-red-400/70 hover:text-red-400 transition btn-active"><i class="fa-solid fa-trash-can text-sm"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- НИЖНЯЯ НАВИГАЦИЯ -->
+    <div class="fixed bottom-0 left-0 right-0 h-20 nav-blur flex items-center justify-around px-4 z-50">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="flex flex-col items-center gap-1 active-tab-btn transition duration-200 w-16">
+            <i class="fa-solid fa-gauge-high text-xl"></i>
+            <span class="text-[10px] font-bold">Сервер</span>
+        </button>
+        <button onclick="switchTab('downloader')" id="nav-downloader" class="flex flex-col items-center gap-1 text-slate-400 opacity-70 transition duration-200 w-16">
+            <i class="fa-solid fa-cloud-arrow-down text-xl"></i>
+            <span class="text-[10px] font-bold">Загрузчик</span>
+        </button>
+        <button onclick="switchTab('admin')" id="nav-admin" class="flex flex-col items-center gap-1 text-slate-400 opacity-70 transition duration-200 w-16">
+            <i class="fa-solid fa-users-gear text-xl"></i>
+            <span class="text-[10px] font-bold">Доступ</span>
+        </button>
+    </div>
+
+    <script>
+        const tg = Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+
+        // Синхронизация профиля Telegram
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const user = tg.initDataUnsafe.user;
+            document.getElementById('userGreeting').innerText = user.first_name;
+            document.getElementById('userAvatar').innerText = user.first_name.charAt(0).toUpperCase();
+        }
+
+        // Переключение вкладок
+        function switchTab(tabId) {
+            tg.HapticFeedback.impactOccurred('light');
+            
+            // Скрываем весь контент
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Показываем нужный
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Сбрасываем стили навигации
+            document.querySelectorAll('.nav-blur button').forEach(btn => {
+                btn.classList.remove('active-tab-btn');
+                btn.classList.add('text-slate-400', 'opacity-70');
+            });
+            // Подсвечиваем активную
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.classList.add('active-tab-btn');
+            activeBtn.classList.remove('text-slate-400', 'opacity-70');
+        }
+
+        // Обновление ползунка качества
+        function updateQualityLabel(val) {
+            const labels = {
+                "1": "360p (Экономия)",
+                "2": "720p (HD)",
+                "3": "1080p (FullHD)",
+                "4": "4K / UltraHD (Max)"
+            };
+            document.getElementById('quality-val').innerText = labels[val];
+        }
+
+        // Кнопка загрузки
+        function startDownload() {
+            tg.HapticFeedback.impactOccurred('medium');
+            const url = document.getElementById('url-input').value.strip();
+            if(!url) {
+                tg.showAlert("Пожалуйста, вставьте ссылку на медиафайл!");
+                return;
+            }
+            // Отправляем ссылку обратно в чат боту текстом, чтобы бэкенд её поймал!
+            tg.sendData(url);
+            tg.close();
+        }
+
+        // Буфер обмена (мок-функция для демонстрации)
+        function pasteFromClipboard() {
+            tg.HapticFeedback.impactOccurred('light');
+            // В реальных Mini Apps чтение буфера ограничено безопасностью, 
+            // поэтому чаще всего юзер просто зажимает поле ввода, но кнопку мы добавили для красоты
+            tg.showAlert("Зажмите поле ввода пальцем и выберите «Вставить»");
+        }
+
+        // Мок админ-функций
+        function showAddUserAlert() {
+            tg.HapticFeedback.impactOccurred('medium');
+            tg.showAlert("Чтобы добавить пользователя, отправьте боту в чат команду:\n/adduser ID");
+        }
+
+        function mockDeleteUser(uid) {
+            tg.HapticFeedback.impactOccurred('warning');
+            tg.showAlert(`Чтобы удалить этого пользователя, скопируйте его ID и отправьте в чат:\n/deluser ${uid}`);
+        }
+    </script>
+</body>
+</html>
